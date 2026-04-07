@@ -1,134 +1,124 @@
 import java.util.Scanner;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-
 public class Main {
     static Scanner sc = new Scanner(System.in);
-    static Carro[] carro = new Carro[5];
-    static int indexCarro;
-    static Estacionamento[] registro = new Estacionamento[20];
+    static Veiculo[] veiculo = new Veiculo[5];
+    static int indexVeiculo;
+    static Registro[] registro = new Registro[20];
     static int indexRegistro;
 
     public static void main(String[] args) {
         int opcao;
 
         do {
-            System.out.println("[1] Entrada de veículos");
+            System.out.println("#### Registro ParkEasy ####");
+            System.out.println("[1] Entrada de veículo");
             System.out.println("[2] Saída de veículo");
             System.out.println("[3] Imprimir veículos estacionados");
-            System.out.println("[4] Imprimir receita");
+            System.out.println("[4] Imprimir a receita");
             System.out.println("[5] Finalizar");
             opcao = sc.nextInt();
 
-        switch (opcao) {
-            case 1 -> registrarEntrada();
-            case 2 -> registrarSaida();
-            case 3 -> estacionados();
-            case 4 -> receita();
-            case 5 -> System.out.println("ParkEasy agradece!");
-            default -> System.out.println("Opção inválida!");
+            switch(opcao) {
+                case 1 -> registrarEntrada();
+                case 2 -> registrarSaida();
+                case 3 -> estacionados();
+                case 4 -> imprimirReceita();
+                case 5 -> System.out.println("ParkEasy agradece");
+                default -> System.out.println("Opção inválida");
             }
             System.out.println();
-        }while(opcao !=5);
+        } while(opcao != 5);
 
     }
 
-    private static void receita() {
+    private static void imprimirReceita() {
         double valor = 0;
-        for (int i =0; i< indexRegistro;i++){
-            if (registro[i].horaSaida != null){
+        for(int i = 0; i < indexRegistro; i++) {
+            if(registro[i].horaSaida != null) {
                 valor += registro[i].calcularValor();
-            } else {
-                System.out.println("A receita atual é R$ 0.00");
             }
         }
-        System.out.println("Receita total: " + valor);
-    }
-
-    private static void estacionados() {
-        for (int i =0; i< indexRegistro;i++){
-            if (registro[i].horaSaida == null){
-                System.out.println(registro[i].carro.placa);
-            }
-        }
+        System.out.println("Receita total R$ " + valor);
     }
 
     private static void registrarSaida() {
         String horaSaida;
         double valor;
-
-        Estacionamento  registro = pesquisarRegistro();
-
-        if (registro != null){
-            System.out.println("Hora de saída (hh:mm): ");
+        Registro registro = pesquisarRegistro();
+        if(registro != null) {
+            System.out.print("Hora de saída (hh:mm) --> ");
             horaSaida = sc.next();
-
             registro.horaSaida = horaSaida;
-
             valor = registro.calcularValor();
-
             System.out.println("Valor total a pagar R$ " + valor);
         }
     }
 
-    private static Estacionamento pesquisarRegistro(){
+    private static Registro pesquisarRegistro() {
         String placa;
-        System.out.println("Placa para pesquisa: ");
+        System.out.print("Placa para pesquisa --> ");
         placa = sc.next().toUpperCase();
-
-        for (int i = 0; i < indexRegistro; i++){
-            if(registro[i].carro.placa.equals(placa)){
+        for(int i = 0; i < indexRegistro; i++) {
+            if(registro[i].veiculo.placa.equals(placa)) {
                 return registro[i];
             }
         }
-        System.out.println("Veículo não encontrado!");
+        System.out.println("Veículo não encontrado");
         return null;
     }
 
+    private static void estacionados() {
+        for(int i = 0; i < indexRegistro; i++) {
+            if(registro[i].horaSaida == null) {
+                System.out.println(registro[i].veiculo.placa);
+            }
+        }
+    }
+
     private static void registrarEntrada() {
-        String marca;
-        String modelo;
-        String placa;
         String nome;
+        String marca, modelo, placa;
         long cpf;
         String horaEntrada;
 
-        Carro carroEncontrado = pesquisar();
-        
-        if (carroEncontrado == null){
-            System.out.println("Marca: " );
-            marca = sc.next();
-            System.out.println("Modelo: ");
-            modelo = sc.next();
-            System.out.println("Placa: ");
-            placa = sc.next();
-            System.out.println("Nome: ");
+        Veiculo veiculoEncontrado = pesquisar();
+
+        if(veiculoEncontrado == null) {
+            System.out.print("Nome do proprietário --> ");
             nome = sc.next();
-            System.out.println("CPF: ");
+            System.out.print("CPF --> ");
             cpf = sc.nextLong();
+            System.out.print("Placa --> ");
+            placa = sc.next().toUpperCase();
+            System.out.print("Marca --> ");
+            marca = sc.next();
+            System.out.print("Modelo --> ");
+            modelo = sc.next();
             Proprietario proprietario = new Proprietario(nome, cpf);
-            carroEncontrado = new Carro(marca, modelo, placa, proprietario);
-            carro[indexCarro] = carroEncontrado;
-            indexCarro++;
+            veiculoEncontrado = new Veiculo(placa, modelo, marca, proprietario);
+            veiculo[indexVeiculo] = veiculoEncontrado;
+            indexVeiculo++;
         }
-            System.out.print("Hora de entrada(HH:mm): ");
-            horaEntrada = sc.next();
-            registro[indexRegistro] = new Estacionamento(carroEncontrado, horaEntrada);
-            indexRegistro++;
+        System.out.print("Hora de entrada (hh:mm) --> ");
+        horaEntrada = sc.next();
+        registro[indexRegistro] = new Registro(veiculoEncontrado, horaEntrada);
+        indexRegistro++;
+
+
+
     }
 
-    private static Carro pesquisar(){
+    private static Veiculo pesquisar() {
         String placa;
-        System.out.println("Placa para pesquisa: ");
+        System.out.print("Placa para pesquisa --> ");
         placa = sc.next().toUpperCase();
-
-        for (int i = 0; i < indexCarro; i++){
-            if(carro[i].placa.equals(placa)){
-                return carro[i];
+        for(int i = 0; i < indexVeiculo; i++) {
+            if(veiculo[i].placa.equals(placa)) {
+                return veiculo[i];
             }
         }
-        System.out.println("Placa não encontrada!");
+        System.out.println("Veículo não encontrado");
         return null;
     }
 }

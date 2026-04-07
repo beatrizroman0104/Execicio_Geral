@@ -1,13 +1,13 @@
 import java.time.Duration;
 import java.time.LocalTime;
 
-public class Estacionamento {
-    Carro carro;
+public class Registro {
+    Veiculo veiculo;
     String horaEntrada;
     String horaSaida;
 
-    public Estacionamento(Carro carro, String horaEntrada) {
-        this.carro = carro;
+    public Registro(Veiculo veiculo, String horaEntrada) {
+        this.veiculo = veiculo;
         this.horaEntrada = horaEntrada;
     }
 
